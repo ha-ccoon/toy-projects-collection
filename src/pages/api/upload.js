@@ -9,12 +9,15 @@ export const config = {
 };
 
 export const upload = async (req, res) => {
-  const fileData = await new Promise((resolve, reject) => {
-    const form = formidable({
-      maxFileSize: 5 * 1024 * 1024,
-      keepExtensions: true,
-    });
+  // formdata 설정
+  const form = formidable({
+    maxFileSize: 5 * 1024 * 1024,
+    keepExtensions: true,
+    uploadDir: '../assets/board/uploads',
+  });
 
+  // formdata 파싱
+  const fileData = await new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
       return resolve(files);
@@ -22,12 +25,8 @@ export const upload = async (req, res) => {
   });
 
   const formData = new FormData();
-  const file = fileData.file.filepath;
+  const file = fileData.file;
   console.log(file);
-  // const readStream = fs.createReadStream(file.filepath);
-  // console.log('readStream', readStream);
-
-  // formData.append('file', readStream);
 
   const api = await fetch('http://localhost:5000', {
     method: 'POST',
@@ -38,9 +37,6 @@ export const upload = async (req, res) => {
   });
 
   const status = api.status;
-  const data = await api.json();
-
-  console.log(data);
 
   if (status === 200) {
     res.status(status).json({ success: true });
