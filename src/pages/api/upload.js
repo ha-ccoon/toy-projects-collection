@@ -1,6 +1,7 @@
 import formidable from 'formidable';
 import FormData from 'form-data';
-import { insertFiles } from '@/service/uploads';
+import { insertMultipart } from '@/service/uploads';
+import { insertTexts } from '@/service/post';
 
 export const config = {
   api: {
@@ -20,25 +21,31 @@ export const upload = async (req, res) => {
     const form = formidable(formOptions);
 
     // formdata 파싱
-    const [fields, files] = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
+    const [fields, multipart] = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, multipart) => {
         if (err) {
           return reject(err);
         }
-        // res.json([fields, files]);
-        return resolve([fields, files]);
+
+        return resolve([fields, multipart]);
       });
     });
 
-    const filePath = files.files[0].filepath;
+    // 텍스트 데이터 삽입
+    const title = fields.title[0];
+    const content = fields.content[0];
 
-    console.log(files.files[0].filepath);
-    console.log(fields.title[0]);
+    insertTexts(title, content);
 
-    const uploadDB = await insertFiles(filePath);
-    res.json({ message: filePath });
+    //멀티파트 데이터 삽입
+    const multipartData = multipart.file;
 
-    // 데이터베이스 삽입
+    multipartData.forEach((fileObj, index) => {
+      // console.log(fileObj.filepath);
+      insertMultipart(fileObj.filepath);
+    });
+
+    res.json(multipartData);
   } catch (err) {
     console.error(err);
   }

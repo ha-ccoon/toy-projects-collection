@@ -1,12 +1,11 @@
 import Upload from '@/database/Upload';
 
-export const insertFiles = async (path) => {
+export const insertMultipart = async (path) => {
   try {
-    const fileData = Upload.create({
+    const fileData = await Upload.create({
       path: path,
     });
 
-    console.log(fileData);
     return fileData;
   } catch (err) {
     console.log(err);
