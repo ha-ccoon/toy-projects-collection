@@ -1,6 +1,6 @@
 import formidable from 'formidable';
 import FormData from 'form-data';
-import fs from 'fs';
+import { insertFiles } from '@/service/uploads';
 
 export const config = {
   api: {
@@ -9,39 +9,38 @@ export const config = {
 };
 
 export const upload = async (req, res) => {
-  // formdata 설정
-  const form = formidable({
-    maxFileSize: 5 * 1024 * 1024,
-    keepExtensions: true,
-    uploadDir: '../assets/board/uploads',
-  });
+  try {
+    // formdata 설정
+    const formOptions = {
+      maxFileSize: 5 * 1024 * 1024,
+      keepExtensions: true,
+      uploadDir: '../assets/board/uploads',
+    };
 
-  // formdata 파싱
-  const fileData = await new Promise((resolve, reject) => {
-    form.parse(req, (err, fields, files) => {
-      if (err) return reject(err);
-      return resolve(files);
+    const form = formidable(formOptions);
+
+    // formdata 파싱
+    const [fields, files] = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) {
+          return reject(err);
+        }
+        // res.json([fields, files]);
+        return resolve([fields, files]);
+      });
     });
-  });
 
-  const formData = new FormData();
-  const file = fileData.file;
-  console.log(file);
+    const filePath = files.files[0].filepath;
 
-  const api = await fetch('http://localhost:5000', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data; boundary=' + formData.getBoundary(),
-    },
-    data: formData,
-  });
+    console.log(files.files[0].filepath);
+    console.log(fields.title[0]);
 
-  const status = api.status;
+    const uploadDB = await insertFiles(filePath);
+    res.json({ message: filePath });
 
-  if (status === 200) {
-    res.status(status).json({ success: true });
-  } else {
-    res.status(500).json('Unknown Error');
+    // 데이터베이스 삽입
+  } catch (err) {
+    console.error(err);
   }
 };
 
