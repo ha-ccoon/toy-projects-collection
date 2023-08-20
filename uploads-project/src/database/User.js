@@ -1,19 +1,28 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/dbconfig.js';
-import Post from './Post.js';
 
-class Upload extends Model {}
+class User extends Model {}
 
-Upload.init(
+User.init(
   {
-    upload_id: {
+    user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    path: {
+    name: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    login_id: { type: DataTypes.STRING, allowNull: false },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     created_by: {
       type: DataTypes.STRING,
@@ -21,7 +30,6 @@ Upload.init(
     },
     updated_by: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     deleted_by: {
       type: DataTypes.STRING,
@@ -31,34 +39,20 @@ Upload.init(
     sequelize,
     underscored: true,
     paranoid: true,
-    timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
-    tableName: 'upload',
-    modelName: 'upload',
+    tableName: 'user',
+    modelName: 'user',
   }
 );
 
-// Define Association
-Post.hasMany(Upload, {
-  foreignKey: {
-    name: 'post_id',
-  },
-});
-
-Upload.belongsTo(Upload, {
-  foreignKey: {
-    name: 'post_id',
-  },
-});
-
-// Upload.sync({ alter: true })
+// User.sync({ alter: true })
 //   .then(() => {
-//     console.log("Upload table has been updated");
+//     console.log('User table has been updated');
 //   })
 //   .catch((err) => {
-//     console.error("Upload table:", err);
+//     console.error('User table:', err);
 //   });
 
-export default Upload;
+export default User;
