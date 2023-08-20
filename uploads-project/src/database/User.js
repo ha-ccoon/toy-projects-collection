@@ -47,12 +47,12 @@ User.init(
   }
 );
 
-User.sync({ alter: true })
-  .then(() => {
-    console.log('User table has been updated');
-  })
-  .catch((err) => {
-    console.error('User table:', err);
-  });
+// User.sync({ alter: true })
+//   .then(() => {
+//     console.log('User table has been updated');
+//   })
+//   .catch((err) => {
+//     console.error('User table:', err);
+//   });
 
 export default User;
