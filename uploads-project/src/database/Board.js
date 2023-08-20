@@ -1,18 +1,21 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/dbconfig.js';
-import Post from './Post.js';
 
-class Upload extends Model {}
+class Board extends Model {}
 
-Upload.init(
+Board.init(
   {
-    upload_id: {
+    board_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    path: {
+    name: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+    description: {
       type: DataTypes.STRING,
     },
     created_by: {
@@ -21,7 +24,6 @@ Upload.init(
     },
     updated_by: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     deleted_by: {
       type: DataTypes.STRING,
@@ -35,30 +37,17 @@ Upload.init(
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
-    tableName: 'upload',
-    modelName: 'upload',
+    tableName: 'board',
+    modelName: 'board',
   }
 );
 
-// Define Association
-Post.hasMany(Upload, {
-  foreignKey: {
-    name: 'post_id',
-  },
-});
-
-Upload.belongsTo(Upload, {
-  foreignKey: {
-    name: 'post_id',
-  },
-});
-
-// Upload.sync({ alter: true })
+// Board.sync({ alter: true })
 //   .then(() => {
-//     console.log("Upload table has been updated");
+//     console.log("Board table has been updated");
 //   })
 //   .catch((err) => {
-//     console.error("Upload table:", err);
+//     console.error("Board table:", err);
 //   });
 
-export default Upload;
+export default Board;
