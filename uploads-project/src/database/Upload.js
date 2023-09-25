@@ -1,8 +1,6 @@
-// const { Sequelize, DataTypes, Model } = require('sequelize');
-// const sequelize = require('../config/database.js');
-
-import { Sequelize, DataTypes, Model } from 'sequelize';
-import sequelize from '../config/database.js';
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../config/dbconfig.js';
+import Post from './Post.js';
 
 class Upload extends Model {}
 
@@ -15,28 +13,52 @@ Upload.init(
       allowNull: false,
     },
     path: {
-      type: DataTypes.BLOB('long'),
+      type: DataTypes.STRING,
+    },
+    created_by: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    updated_by: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    deleted_by: {
+      type: DataTypes.STRING,
     },
   },
   {
     sequelize,
+    underscored: true,
+    paranoid: true,
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    underscored: true,
+    deletedAt: 'deleted_at',
     tableName: 'upload',
     modelName: 'upload',
-    charset: 'utf8',
-    collate: 'utf8_general_ci',
   }
 );
 
+// Define Association
+Post.hasMany(Upload, {
+  foreignKey: {
+    name: 'post_id',
+  },
+});
+
+Upload.belongsTo(Upload, {
+  foreignKey: {
+    name: 'post_id',
+  },
+});
+
 // Upload.sync({ alter: true })
 //   .then(() => {
-//     console.log('Upload table has been updated');
+//     console.log("Upload table has been updated");
 //   })
 //   .catch((err) => {
-//     console.error('Upload table:', err);
+//     console.error("Upload table:", err);
 //   });
 
 export default Upload;
