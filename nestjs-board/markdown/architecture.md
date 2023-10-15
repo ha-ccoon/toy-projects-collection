@@ -1,4 +1,4 @@
-## `src` Stuructures
+## Architecture of Nest
 
 ![1696310401883](image/architecture/1696310401883.png)
 
@@ -123,6 +123,100 @@ export class CatsController {
 | `@Ip()`                   | `req.ip`                              |
 | `@HostParam()`            | `req.hosts`                           |
 
-> Note that when you inject either `@Res()` or `@Response()` in a method handler, you put Nest into **Library-specific mode** for that handler, and you become responsible for managing the response. When doing so, you must issue some kind of response by making a call on the `response` object (e.g., `res.json(...)` or `res.send(...)`), or the HTTP server will hang.
+> Note that when you inject either `@Res()` or `@Response()` in a method handler, you put Nest into **Library-specific mode** for that handler, and you become responsible for managing the response. When doing so, you must issue some kind of response by making a call on the `response` object (e.g., `res.json(...)` or `res.send(...)`),or the HTTP server will hang.
 
-### Resources
+## Providers
+
+Providers are a **fundamental** concept in Nest. Many of the basic Nest classes may be treated as a provider - services, repositories, factories, helpers, and so on.
+
+- The main ides of a provider is that it can be **injected** as a dependency.
+- This means objects can create various relationships with each other, and the function of "wiring up" these objects can largely be delegated to the Nest runtime system.
+
+![1697370218026](image/architecture/1697370218026.png)
+
+Controllers should handle HTTP requests and delegate more complex tasks to **providers**. Providers are plain JavaScript classes that are declared as providers in a module.
+
+#### SOLID
+
+
+### Services
+
+Service in Nest isn't only vaild concept in Nest, but also programming in general. 
+
+Here is the example below. `CatsService` will be responsible for data storage and retrieval, and is designed to be used by the `CatsController`.
+
+```
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class CatsService {
+  constructor() {
+    this.cats = [];
+  }
+
+  create(cat) {
+    this.cats.push(cat);
+  }
+
+  findAll() {
+    return this.cats;
+  }
+}
+```
+
+Our CatsService is a basic class with one property and two methods. 
+
+- The only new feature is that it uses the  `Injectable()` decorator.
+- `Injectable()` decorator: attaches metadata, which declares that `CatsService` is a class that can be managed by the **[Nest IoC container](### DI fundamentals)**.
+
+```
+import { Controller, Get, Post, Body, Bind, Dependencies } from '@nestjs/common';
+import { CatsService } from './cats.service';
+
+@Controller('cats')
+@Dependencies(CatsService)
+export class CatsController {
+  constructor(catsService) {
+    this.catsService = catsService;
+  }
+
+  @Post()
+  @Bind(Body())
+  async create(createCatDto) {
+    this.catsService.create(createCatDto);
+  }
+
+  @Get()
+  async findAll() {
+    return this.catsService.findAll();
+  }
+}
+```
+
+The `CatsService` is injected through the class constructor. 
+
+Notice the use of the private syntax. This shorthand allows us to both declare and initialize the `catsService` member immediately in the same location.
+
+### Dependency Injection
+
+Nest is built around the strong design pattern commonly known as **Dependency injection. (Feat. Angular)**
+
+- There are two main roles in the DI (Dependency Injection) system: dependency consumer and dependency provider.
+  - When a dependency is requested, the injector checks its registry to see if there is an instance already available there.
+  - If not, a *new instance* is created and stored in the registry.
+  - Angular creates an *application-wide injector* during the application bootstrap process, as well as any other injectors as needed.
+  - In most cases, you don't need to manually create injectors, but you should know that there is a layer that connects providers and consumers.
+
+In the example below, Nest will resolve the `CatService` by creating and returning an instance of `CatService` (or returning the existing instance if it has already been requested). This dependency is resolved and passed to your controller's constructor (or assigned to the indicated property).
+
+```
+constructor(private catsService: CatsService) {}
+```
+
+### Scops
+
+Providers normally have a lifetime (scope) synchronized with the application lifecycle.
+
+* When the application is bootstrapped, every dependency must be resolved, and therefore every provider has to be **instantiated**.
+* Similarly, when the application shuts down, each provider will be destroyed.
+* However, there are ways to make your provider lifetime *request-scoped* as well.
