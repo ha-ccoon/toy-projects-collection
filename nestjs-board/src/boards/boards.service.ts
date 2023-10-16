@@ -1,5 +1,5 @@
 // service: DB Logics
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Board, BoardStatus } from './board.model';
 import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -13,7 +13,12 @@ export class BoardsService {
   }
 
   getBoardById(id: string): Board {
-    return this.boards.find((board) => id === board.id);
+    const boardById = this.boards.find((board) => id === board.id);
+
+    if (!boardById) {
+      throw new NotFoundException(`Can't find board id ${id}`);
+    }
+    return boardById;
   }
 
   createBoard(CreateBoardDto: CreateBoardDto) {
@@ -29,12 +34,14 @@ export class BoardsService {
     return board;
   }
 
-  updateBoardStatus(id: string, status: BoardStatus) {
+  updateBoardStatus(id: string, status: BoardStatus): Board {
     const board = this.getBoardById(id);
     board.status = status;
+    return board;
   }
 
   deleteBoard(id: string): void {
-    this.boards = this.boards.filter((board) => id !== board.id);
+    const board = this.getBoardById(id);
+    this.boards = this.boards.filter((item) => board.id !== item.id);
   }
 }
