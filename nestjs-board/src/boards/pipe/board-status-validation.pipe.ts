@@ -3,7 +3,7 @@ import {
   BadRequestException,
   PipeTransform,
 } from '@nestjs/common';
-import { BoardStatus } from '../board.model';
+import { BoardStatus } from '../model/board.model';
 
 export class BoardStatusValidationPipe implements PipeTransform {
   // can access to method, but can't modify
