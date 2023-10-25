@@ -1,7 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
-import { Board } from '../entity/board.entity';
-import { CreateBoardDto } from '../dto/create-board.dto';
-import { BoardStatus } from '../types/board-status';
+// import { DataSource, Repository } from 'typeorm';
+// import { Board } from '../entity/board.entity';
+// import { CreateBoardDto } from '../dto/create-board.dto';
+// import { BoardStatus } from '../types/board-status';
 
 // export const boardProviders = [
 //   {
@@ -13,6 +13,6 @@ import { BoardStatus } from '../types/board-status';
 //   private boardsRepository = Repository<Board>;
 
 //   async createBoard(CreateBoardDto: CreateBoardDto): Promise<Board> {
- 
+
 //   }
 // }
