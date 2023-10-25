@@ -1,9 +1,5 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  PipeTransform,
-} from '@nestjs/common';
-import { BoardStatus } from '../model/board.model';
+import { BadRequestException, PipeTransform } from '@nestjs/common';
+import { BoardStatus } from '../types/board-status';
 
 export class BoardStatusValidationPipe implements PipeTransform {
   // can access to method, but can't modify
