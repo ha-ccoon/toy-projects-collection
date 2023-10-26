@@ -29,23 +29,17 @@ export class BoardsController {
     return this.boardsService.getBoardById(id);
   }
 
-  @Post()
-  @UsePipes(ValidationPipe)
-  createBoard(@Body() CreateBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardsService.createBoard(CreateBoardDto);
-  }
-
   // /**
   //  *
   //  * @param title
   //  * @param description
   //  * @returns: board (return only board itself so the type is just "Board")
   //  */
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // createBoard(@Body('') CreateBoardDto: CreateBoardDto): Board {
-  //   return this.boardsService.createBoard(CreateBoardDto);
-  // }
+  @Post()
+  @UsePipes(ValidationPipe)
+  createBoard(@Body('') CreateBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardsService.createBoard(CreateBoardDto);
+  }
 
   @Patch('/:id/status')
   updateBoard(
