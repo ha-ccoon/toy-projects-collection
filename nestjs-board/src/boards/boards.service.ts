@@ -1,9 +1,7 @@
 // service: DB Logics
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BoardStatus } from './types/board-status';
 import { CreateBoardDto } from './dto/create-board.dto';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './entity/board.entity';
 import { BoardsRepository } from './repository/board.repository';
 

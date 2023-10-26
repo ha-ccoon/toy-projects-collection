@@ -29,7 +29,6 @@ export class BoardsController {
     return this.boardsService.getBoardById(id);
   }
 
-  // /**
   //  *
   //  * @param title
   //  * @param description
@@ -37,7 +36,7 @@ export class BoardsController {
   //  */
   @Post()
   @UsePipes(ValidationPipe)
-  createBoard(@Body('') CreateBoardDto: CreateBoardDto): Promise<Board> {
+  createBoard(@Body() CreateBoardDto: CreateBoardDto): Promise<Board> {
     return this.boardsService.createBoard(CreateBoardDto);
   }
 
