@@ -10,8 +10,8 @@ import { User } from 'src/auth/entity/user.entity';
 export class BoardsService {
   constructor(private readonly boardsRepository: BoardsRepository) {}
 
-  async getAllBoards(): Promise<Board[]> {
-    return await this.boardsRepository.getAllBoards();
+  async getAllBoards(user: User): Promise<Board[]> {
+    return await this.boardsRepository.getAllBoards(user);
   }
 
   async getBoardById(id: number): Promise<Board> {

@@ -13,8 +13,12 @@ export class BoardsRepository {
     this.boardsRepository = this.dataSource.getRepository(Board);
   }
 
-  async getAllBoards(): Promise<Board[]> {
-    const boards = await this.boardsRepository.find();
+  async getAllBoards(user: User): Promise<Board[]> {
+    const query = this.boardsRepository.createQueryBuilder('board');
+
+    // board의 userId 컬럼의 값과 user의 id와 같은 게시판을 select
+    query.where('board.userId = :userId', { userId: user.id });
+    const boards = await query.getMany();
     return boards;
   }
 
