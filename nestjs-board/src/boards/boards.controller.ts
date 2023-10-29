@@ -20,7 +20,6 @@ import { Board } from './entity/board.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
 import { User } from 'src/auth/entity/user.entity';
-import { create } from 'domain';
 @Controller('boards')
 @UseGuards(AuthGuard())
 export class BoardsController {
@@ -61,10 +60,7 @@ export class BoardsController {
   }
 
   @Delete('/:id')
-  deleteBoard(
-    @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
-  ): Promise<void> {
-    return this.boardsService.deleteBoard(id, user);
+  deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.boardsService.deleteBoard(id);
   }
 }

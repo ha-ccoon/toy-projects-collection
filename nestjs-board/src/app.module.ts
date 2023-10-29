@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BoardsModule } from './boards/boards.module';
-import { databaseConfig } from './config/database.config';
+import { databaseConfig } from '../config/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
