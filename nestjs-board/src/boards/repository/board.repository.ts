@@ -3,6 +3,7 @@ import { Board } from '../entity/board.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBoardDto } from '../dto/create-board.dto';
 import { BoardStatus } from '../types/board-status';
+import { User } from 'src/auth/entity/user.entity';
 
 @Injectable()
 export class BoardsRepository {
@@ -12,8 +13,12 @@ export class BoardsRepository {
     this.boardsRepository = this.dataSource.getRepository(Board);
   }
 
-  async getAllBoards(): Promise<Board[]> {
-    const boards = await this.boardsRepository.find();
+  async getAllBoards(user: User): Promise<Board[]> {
+    const query = this.boardsRepository.createQueryBuilder('board');
+
+    // board의 userId 컬럼의 값과 user의 id와 같은 게시판을 select
+    query.where('board.userId = :userId', { userId: user.id });
+    const boards = await query.getMany();
     return boards;
   }
 
@@ -28,15 +33,17 @@ export class BoardsRepository {
     return board;
   }
 
-  async createBoard(CreateBoardDto: CreateBoardDto): Promise<Board> {
+  async createBoard(
+    CreateBoardDto: CreateBoardDto,
+    user: User,
+  ): Promise<Board> {
     const { title, description } = CreateBoardDto;
-    const board = this.boardsRepository.save({
+    const board = await this.boardsRepository.save({
       title,
       description,
       status: BoardStatus.PUBLIC,
+      user,
     });
-    // await this.boardsRepository.save(board);
-    console.log(board);
     return board;
   }
 
