@@ -42,7 +42,6 @@ export class AuthRepository {
         username,
       },
     });
-
     return user;
   }
 

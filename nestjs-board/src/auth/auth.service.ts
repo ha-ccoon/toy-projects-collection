@@ -27,6 +27,7 @@ export class AuthService {
     if (user) {
       await bcrypt.compare(password, user.password);
 
+      // issue accessToken
       const payload = { username };
       const accessToken = await this.jwtService.sign(payload);
 
@@ -34,6 +35,10 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Login failed');
     }
+  }
+
+  async getUserInfo(createUserDto: CreateUserDto) {
+    this.signIn(createUserDto); 
   }
 
   async updateUser() {
