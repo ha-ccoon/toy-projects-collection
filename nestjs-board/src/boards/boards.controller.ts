@@ -9,13 +9,16 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { BoardStatus } from './types/board-status';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatusValidationPipe } from './pipe/board-status-validation.pipe';
 import { Board } from './entity/board.entity';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('boards')
+@UseGuards(AuthGuard())
 export class BoardsController {
   constructor(private boardsService: BoardsService) {}
 
@@ -29,11 +32,6 @@ export class BoardsController {
     return this.boardsService.getBoardById(id);
   }
 
-  //  *
-  //  * @param title
-  //  * @param description
-  //  * @returns: board (return only board itself so the type is just "Board")
-  //  */
   @Post()
   @UsePipes(ValidationPipe)
   createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
