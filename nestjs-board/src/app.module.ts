@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BoardsModule } from './boards/boards.module';
-import { AuthModule } from './auth/auth.module';
+import { databaseConfig } from '../config/database.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [BoardsModule, AuthModule],
-  controllers: [],
-  providers: [],
+  imports: [TypeOrmModule.forRoot(databaseConfig), BoardsModule, AuthModule],
 })
 export class AppModule {}
