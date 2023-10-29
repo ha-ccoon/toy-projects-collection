@@ -29,7 +29,7 @@ export class BoardsService {
     return await this.boardsRepository.updateBoardStatus(id, status);
   }
 
-  async deleteBoard(id: number): Promise<void> {
-    return this.boardsRepository.deleteBoard(id);
+  async deleteBoard(id: number, user: User): Promise<void> {
+    return this.boardsRepository.deleteBoard(id, user);
   }
 }

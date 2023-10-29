@@ -55,7 +55,7 @@ export class BoardsRepository {
     return board;
   }
 
-  async deleteBoard(id: number): Promise<void> {
+  async deleteBoard(id: number, user: User): Promise<void> {
     const board = await this.boardsRepository.delete(id);
 
     if (board.affected === 0) {
